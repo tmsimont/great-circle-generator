@@ -1,0 +1,38 @@
+#graph-container path {
+  fill: none;
+  stroke-linejoin: round;
+}
+
+#graph-container .sphere,
+#graph-container .graticule {
+  stroke: #aaa;
+}
+
+#graph-container .equator {
+  stroke: #e33;
+  stroke-width: 2px;
+}
+
+#graph-container .equator2 {
+  stroke: blue;
+  stroke-width: 2px;
+}
+#graph-container .equator3 {
+  stroke: green;
+  stroke-width: 2px;
+}
+
+#graph-container .point {
+	fill:#333;
+}
+#graph-container .dragpoint {
+	fill:transparent;
+}
+
+#graph-container {
+	max-width:540px;
+	margin:0 auto;
+}
+#graph-container h5{
+	text-align:center;
+}

@@ -320,9 +320,6 @@ static std::string generateCircles(int numcircles)
 	vector<GreatCircle*> circles;
 	vector<Point*> intersections;
 
-	// seed random generations with current time
-	srand(time(NULL));
-
 	for (int i = 0; i < numcircles; i++) {
 		GreatCircle *c = randomCircle();
 		int bumps = 0;
@@ -432,6 +429,9 @@ static std::string generateCircles(int numcircles)
 }
 
 int main() {
+	// seed random generations with current time
+	srand(time(0));
+
 	std::string circleJSON = generateCircles(5);
 	cout << circleJSON << endl;
 	/*
