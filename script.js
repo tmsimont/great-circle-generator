@@ -1,3 +1,8 @@
+/**
+ * Take the output from main.cpp and put it into a d3 globe.
+ * credit to ivycodes for draggable d3 globe JavaScript:
+ *  http://bl.ocks.org/ivycodes/7c94cb5a3accd9913263
+ */
 $(document).ready(function() {	
 
 	var input = [];
