@@ -1,5 +1,7 @@
 ## Great Circle Generator
 
+![Screenshot](http://www.trevorsimonton.com/assets/posts/greatcircles/screencapture.PNG)
+
 This C++ program generates "great circles" on a globe, calculates their intersections, and outputs all of the data to a JavaScript that can be embedded directly into a page for visualization.
 
 The HTML, CSS and JavaScript files in this repo use the generated JavaScript to visualize the great circles with a d3.js globe.
