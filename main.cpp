@@ -182,6 +182,8 @@ public:
 		this->p1 = p1;
 		this->p2 = p2;
 	}
+
+	//TODO: implement destructor, or use smart pointers for origin plane
 	
 	/**
 	 * Each pair of great circles has exactly 2 intersections.
@@ -322,6 +324,7 @@ static std::string generateCircles(int numcircles)
 
 	for (int i = 0; i < numcircles; i++) {
 		GreatCircle *c = randomCircle();
+		// make sure c gets destroyed as necessary
 		int bumps = 0;
 		
 		// we wrap this in a loop to make sure we don't get circles that break our rules...
@@ -332,6 +335,7 @@ static std::string generateCircles(int numcircles)
 			// compare new random circle with existing circles
 			for (GreatCircle *other : circles) {
 				vector<Point*> ints = c->twoCircleIntersections(other);
+				// NOTE -- vector ints must clean up new points returned
 				itemp.push_back(ints[0]);
 				itemp.push_back(ints[1]);
 			}
@@ -353,6 +357,7 @@ static std::string generateCircles(int numcircles)
 						if (bumps < 20) {
 							GreatCircle *newC = new GreatCircle(Point(c->p1.theta + fmod(rand(), PI), c->p1.phi + fmod(rand(), PI)), c->p2);
 							delete c;
+							// NOTE: memory leak unless Circle has a destructor to clean up origin plane and its points
 							c = newC;
 							bumps++;
 						}
@@ -375,6 +380,7 @@ static std::string generateCircles(int numcircles)
 		for (GreatCircle *other : circles) {
 			int idx = intersections.size();
 			vector<Point*> ints = c->twoCircleIntersections(other);
+			// NOTE: vector ints is responsible for 2 new points
 
 			ints[0]->id = idx;
 			ints[1]->id = idx+1;
@@ -385,6 +391,7 @@ static std::string generateCircles(int numcircles)
 			c->intersections.push_back(ints[0]);
 			c->intersections.push_back(ints[1]);
 			other->intersections.push_back(ints[0]);
+			// TODO: use shared pointers... management of ints 0 and 1 just got ugly
 			other->intersections.push_back(ints[1]);
 		}
 		circles.push_back(c);
