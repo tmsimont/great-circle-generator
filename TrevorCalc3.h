@@ -1,5 +1,5 @@
-#ifndef TREVOR_CALC2_H_
-#define TREVOR_CALC2_H_
+#ifndef TREVOR_CALC3_H_
+#define TREVOR_CALC3_H_
 
 #include <vector>
 
@@ -11,4 +11,4 @@ const float r = 1;
 std::vector<float> crossProduct(std::vector<float> v1, std::vector<float> v2);
 std::vector<float> unitVector(std::vector<float> v);
 
-#endif
+#endif // TREVOR_CALC3_H_

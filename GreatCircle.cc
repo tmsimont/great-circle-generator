@@ -1,6 +1,6 @@
 #include <iostream>
 #include "GreatCircle.h"
-#include "TrevorCalc2.h"
+#include "TrevorCalc3.h"
 
 /**
  * Each pair of great circles has exactly 2 intersections.

@@ -1,4 +1,4 @@
-#include "TrevorCalc2.h"
+#include "TrevorCalc3.h"
 #include <iostream>
 #include <vector>
 #include <ctime>

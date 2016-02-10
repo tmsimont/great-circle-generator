@@ -1,7 +1,7 @@
 #ifndef GREAT_CIRCLE_H_
 #define GREAT_CIRCLE_H_
 
-#include "TrevorCalc2.h"
+#include "TrevorCalc3.h"
 #include <vector>
 #include <memory>
 #include <sstream>

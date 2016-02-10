@@ -1,7 +1,7 @@
 #ifndef ORIGIN_PLANE_H_
 #define ORIGIN_PLANE_H_
 
-#include "TrevorCalc2.h"
+#include "TrevorCalc3.h"
 #include <vector>
 #include "Point.h"
 #include <sstream>

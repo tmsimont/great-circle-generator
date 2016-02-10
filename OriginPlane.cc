@@ -1,5 +1,5 @@
 #include "OriginPlane.h"
-#include "TrevorCalc2.h"
+#include "TrevorCalc3.h"
 
 void OriginPlane::calculateNormal() {
 	n = crossProduct(std::vector<float> {p2.x, p2.y, p2.z}, std::vector<float> {p3.x, p3.y, p3.z});
