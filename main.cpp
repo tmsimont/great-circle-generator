@@ -6,6 +6,7 @@
 #include <ctime>
 #include <sstream>
 #include <fstream>
+#include <memory>
 
 #define PI 3.1415926535897932384626433832795
 #define FAC1 (180.0/PI)
@@ -52,7 +53,7 @@ public:
 	float x;
 	float y;
 	float z;
-	vector<Point*> neighbors;
+	vector<weak_ptr<Point> > neighbors;
 
 	/**
 	* Point is at origin by default
@@ -87,7 +88,7 @@ public:
 	 * Get the haversine distance to another point (distance between 
 	 * two points on a sphere)
 	 */
-	float distanceTo(Point *other) {
+	float distanceTo(shared_ptr<Point> other) {
 		float dlon = other->theta - theta;
 		float dlat = other->phi - phi;
 		float a = pow(sin(dlat / 2), 2) + cos(phi) * cos(other->phi) * pow(sin(dlon / 2), 2);
@@ -166,7 +167,7 @@ public:
 class GreatCircle {
 public:
 	// list of intersections with other great circles
-	vector<Point*> intersections;
+	vector<shared_ptr<Point> > intersections;
 	// each great circle corresponds to an origin plane
 	OriginPlane *plane;
 	
@@ -183,7 +184,9 @@ public:
 		this->p2 = p2;
 	}
 
-	//TODO: implement destructor, or use smart pointers for origin plane
+	~GreatCircle() {
+		delete plane;
+	}
 	
 	/**
 	 * Each pair of great circles has exactly 2 intersections.
@@ -192,15 +195,15 @@ public:
 	 * @param c2
 	 *   The other circle to use to find 2 intersections
 	 */
-	vector<Point*> twoCircleIntersections(GreatCircle *c2) {
+	vector<shared_ptr<Point> > twoCircleIntersections(GreatCircle *c2) {
 		// use the line intersection of the circle's planes
 		vector<float> v = plane->intersectionVector(c2->plane);
 		v = unitVector(v);
 		// use the unit vector that is the intersection vector to generate 1 point
-		Point *i1 = new Point(v[0], v[1], v[2]);
+		shared_ptr<Point> i1 = make_shared<Point>(v[0], v[1], v[2]);
 		// rotate to opposite side of the circle for other point
-		Point *i2 = new Point(i1->theta + PI, 2 * PI - (i1->phi + PI));
-		return vector<Point*> {i1, i2};
+		shared_ptr<Point> i2 = make_shared<Point>(i1->theta + PI, 2 * PI - (i1->phi + PI));
+		return vector<shared_ptr<Point> > {i1, i2};
 	}
 	
 	/**
@@ -266,7 +269,7 @@ void printCircles(std::stringstream *ss, vector<GreatCircle*> circles) {
 		*ss << "],";
 		*ss << "intersects:[";
 		int j = 0;
-		for (Point *p : c->intersections) {
+		for (shared_ptr<Point> p : c->intersections) {
 			*ss << "{p:";
 			p->printJSON(ss);
 			*ss << ",";
@@ -290,10 +293,10 @@ void printCircles(std::stringstream *ss, vector<GreatCircle*> circles) {
 /**
  * Print a list of points in nice JSON format to a string stream.
  */
-void printPoints(std::stringstream *ss, vector<Point*> points) {
+void printPoints(std::stringstream *ss, vector<shared_ptr<Point> > points) {
 	*ss << "var points = [" << endl;
 	int i = 0;
-	for (Point *p : points) {
+	for (shared_ptr<Point> p : points) {
 		*ss << "{p:";
 		p->printJSON(ss);
 		*ss << ",";
@@ -320,7 +323,7 @@ static std::string generateCircles(int numcircles)
 	
 	float circleSpace = PI / (6 * numcircles);
 	vector<GreatCircle*> circles;
-	vector<Point*> intersections;
+	vector<shared_ptr<Point> > intersections;
 
 	for (int i = 0; i < numcircles; i++) {
 		GreatCircle *c = randomCircle();
@@ -331,10 +334,10 @@ static std::string generateCircles(int numcircles)
 		bool OK = false;
 		
 		while (!OK) {
-			vector<Point*> itemp;
+			vector<shared_ptr<Point> > itemp;
 			// compare new random circle with existing circles
 			for (GreatCircle *other : circles) {
-				vector<Point*> ints = c->twoCircleIntersections(other);
+				vector<shared_ptr<Point> > ints = c->twoCircleIntersections(other);
 				// NOTE -- vector ints must clean up new points returned
 				itemp.push_back(ints[0]);
 				itemp.push_back(ints[1]);
@@ -342,8 +345,8 @@ static std::string generateCircles(int numcircles)
 			
 			// make sure new circle isn't too close to other intersections
 			OK = true;
-			for (Point *p : itemp) {
-				for (Point *ep : intersections) {
+			for (shared_ptr<Point> p : itemp) {
+				for (shared_ptr<Point> ep : intersections) {
 					if (abs(p->theta - ep->theta) < circleSpace && abs(p->phi - ep->phi) < circleSpace) {
 		
 						// @todo: figure out why this becomes an infinite loop with too many circles...
@@ -351,7 +354,6 @@ static std::string generateCircles(int numcircles)
 						OK = false;
 						
 						while (itemp.size() > 0) {
-							delete itemp[itemp.size()-1];
 							itemp.pop_back();
 						}
 						if (bumps < 20) {
@@ -372,14 +374,13 @@ static std::string generateCircles(int numcircles)
 			}
 			// make sure temp points are gone
 			while (itemp.size() > 0) {
-				delete itemp[itemp.size() - 1];
 				itemp.pop_back();
 			}
 		}
 		// now we have a new circle that isn't too close to others
 		for (GreatCircle *other : circles) {
 			int idx = intersections.size();
-			vector<Point*> ints = c->twoCircleIntersections(other);
+			vector<shared_ptr<Point> > ints = c->twoCircleIntersections(other);
 			// NOTE: vector ints is responsible for 2 new points
 
 			ints[0]->id = idx;
@@ -404,7 +405,7 @@ static std::string generateCircles(int numcircles)
 		for (int j = 0; j < c->intersections.size(); j++) {
 
 			// assume closest is 0 for comparison (or 1 if this is 0)
-			Point* closest = c->intersections[0];
+			shared_ptr<Point> closest = intersections[0];
 			if (j == 0) {
 				closest = c->intersections[1];
 			}
@@ -431,6 +432,10 @@ static std::string generateCircles(int numcircles)
 	printCircles(&ss, circles);
 	printPoints(&ss, intersections);
 
+	// clean up circles memory
+	for (int i = 0; i < circles.size(); i++) {
+		delete circles[i];
+	}
 
 	return ss.str();
 }
