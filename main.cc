@@ -20,8 +20,6 @@
 Point randomPoint() {
 	float theta = fmod(rand(), 2 * PI);
 	float phi = fmod(rand(), PI);
-	std::cout << theta << std::endl;
-	std::cout << phi << std::endl;
 	return Point(theta, phi);
 }
 
