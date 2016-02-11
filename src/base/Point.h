@@ -13,12 +13,10 @@ using std::stringstream;
 using std::shared_ptr;
 using std::weak_ptr;
 
-/**
- * Point represents a set of coordinates in Cartesian and Polar
- * coordinates that describes a point on the surface of a sphere.
- * This point supports conversion from Cartesian to Polar, and
- * can be output as d3.js globe friendly JSON format.
- */
+// Point represents a set of coordinates in Cartesian and Polar
+// coordinates that describes a point on the surface of a sphere.
+// This point supports conversion from Cartesian to Polar, and
+// can be output as d3.js globe friendly JSON format.
 class Point {
  public:
   int id;
@@ -29,27 +27,22 @@ class Point {
   float z;
   vector<weak_ptr<Point> > neighbors;
 
-  /**
-  * Point is at origin by default
-  */
+  // Point is at origin by default
   Point() : theta(0), phi(0), x(0), y(0), z(0) {}
 
-  /**
-  * Given spherical coordinates, build point and populate Cartesian
-  */
+  // Given spherical coordinates, build point and populate Cartesian
   Point(float theta, float phi);
 
-  /**
-  * Given Cartesian coordinates, build point and populate spherical
-  */
+  // Given Cartesian coordinates, build point and populate spherical
   Point(float x, float y, float z);
 
-  /**
-   * Get the haversine distance to another point (distance between 
-   * two points on a sphere)
-   */
+  // Get the haversine distance to another point
   float distanceTo(shared_ptr<Point> other);
+
   void print(stringstream *ss);
+
+  // The JSON output here is designed to work with the coordinate
+  // system used by d3.js
   void printJSON(stringstream *ss);
 };
 

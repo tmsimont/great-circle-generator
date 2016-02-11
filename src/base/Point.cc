@@ -6,9 +6,6 @@ using std::endl;
 using std::stringstream;
 using std::shared_ptr;
 
-/**
-* Given spherical coordinates, build point and populate Cartesian
-*/
 Point::Point(float theta, float phi) {
   this->theta = fmod(theta, 2 * PI);
   this->phi = fmod(phi, 2 * PI);
@@ -17,9 +14,6 @@ Point::Point(float theta, float phi) {
   z = r * cos(this->phi);
 }
 
-/**
-* Given Cartesian coordinates, build point and populate spherical
-*/
 Point::Point(float x, float y, float z) {
   this->x = x;
   this->y = y;
@@ -28,10 +22,6 @@ Point::Point(float x, float y, float z) {
   theta = atan2(y, x);
 }
 
-/**
- * Get the haversine distance to another point (distance between 
- * two points on a sphere)
- */
 float Point::distanceTo(shared_ptr<Point> other) {
   float dlon = other->theta - theta;
   float dlat = other->phi - phi;
@@ -46,10 +36,6 @@ void Point::print(stringstream *ss) {
   *ss << printf("theta: %f, phi: %f", theta, phi) << endl;
 }
 
-/**
- * The JSON output here is designed to work with the coordinate 
- * system used by d3.js
- */
 void Point::printJSON(stringstream *ss) {
   *ss << "[" << theta*FAC1 - 90 << ", " << 90 - phi * FAC1 << "]";
 }

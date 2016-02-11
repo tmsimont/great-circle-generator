@@ -7,13 +7,6 @@ using std::shared_ptr;
 using std::make_shared;
 using std::stringstream;
 
-/**
- * Each pair of great circles has exactly 2 intersections.
- * Use this function to fine the 2 intersections with this circle
- * and another.
- * @param c2
- *   The other circle to use to find 2 intersections
- */
 vector<shared_ptr<Point> >
 GreatCircle::twoCircleIntersections(GreatCircle *c2) {
   // use the line intersection of the circle's planes
@@ -27,13 +20,6 @@ GreatCircle::twoCircleIntersections(GreatCircle *c2) {
   return vector<shared_ptr<Point> > {i1, i2};
 }
 
-
-/**
- * To draw this circle on a sphere, we need 5 nicely spaced points.
- * The first and fifth points are the same point.
- * This helps us draw 4 segments around a circle, which is what we need
- * when drawing the circle in d3.js
- */
 void GreatCircle::printFivePoints(stringstream *ss) {
   // a vector that is cross product of p1's position vector
   // and the plane's normal is 90 degrees rotated along great circle from p1
@@ -61,4 +47,3 @@ void GreatCircle::printFivePoints(stringstream *ss) {
   *ss << ",";
   p1.printJSON(ss);
 }
-

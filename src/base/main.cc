@@ -21,25 +21,19 @@ using std::endl;
 unsigned int globalSeed;
 
 
-/**
- * Get a random point in 3d space (assumed that it's 1 unit from origin)
- */
+// Get a random point in 3d space (assumed that it's 1 unit from origin)
 Point randomPoint() {
   float theta = fmod(rand_r(&globalSeed), 2 * PI);
   float phi = fmod(rand_r(&globalSeed), PI);
   return Point(theta, phi);
 }
 
-/**
- * Use two random points to generate a random circle
- */
+// Use two random points to generate a random circle
 GreatCircle *randomCircle() {
   return new GreatCircle(randomPoint(), randomPoint());
 }
 
-/**
- * Print a list of circles in nice JSON format to a string stream.
- */
+// Print a list of circles in nice JSON format to a string stream.
 void printCircles(stringstream *ss, vector<GreatCircle*> circles) {
   *ss << "var circles = [" << endl;
   int i = 0;
@@ -70,9 +64,7 @@ void printCircles(stringstream *ss, vector<GreatCircle*> circles) {
   *ss << endl;
 }
 
-/**
- * Print a list of points in nice JSON format to a string stream.
- */
+// Print a list of points in nice JSON format to a string stream.
 void printPoints(stringstream *ss, vector<shared_ptr<Point> > points) {
   *ss << "var points = [" << endl;
   int i = 0;
@@ -90,13 +82,8 @@ void printPoints(stringstream *ss, vector<shared_ptr<Point> > points) {
   *ss << "]";
 }
 
-/**
- * Generate random great circles and print them
- * to a string stream.
- * @return
- *   A JSON string describing our great circles and their points of 
- *   intersection
- */
+// Generate the given amount of random great circles and
+// return them as a JSON string
 string generateCircles(int numcircles) {
   stringstream ss;
 
